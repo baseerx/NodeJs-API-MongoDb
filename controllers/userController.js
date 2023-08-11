@@ -37,7 +37,7 @@ const loginUser=asyncHandler(async (req, res) => {
             res.status(400).json({error: "Invalid Credentials"});
             throw new Error("Invalid Credentials");
         }
-        const token=jwt.sign({_id: user._id}, process.env.JWT_SECRET, {expiresIn: "1m"});
+        const token=jwt.sign({_id: user._id}, process.env.JWT_SECRET, {expiresIn: "15m"});
         // const token=jwt.sign({_id: user._id}, process.env.JWT_SECRET);
         res.json({token});
     } else {

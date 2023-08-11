@@ -1,5 +1,6 @@
 const asyncHandler=require('express-async-handler')
-const Contact=require('../models/contactModel')
+const Contact=require('../models/contactModel');
+const userModel=require('../models/userModel');
 const getContacts=asyncHandler(
     async (req, res) => {
   // Your route logic here
@@ -13,14 +14,19 @@ const postContacts = asyncHandler(async (req, res) => {
     res.status(422).json({ error: "Please add all the fields" });
     throw new Error("Please add all the fields");
     }
-    
+    const userid=userModel.findById(req.user._id);
+    if(!userid) {
+        res.status(404).json({error: "User not found"});
+        throw new Error("User not found");
+    }
     Contact.create({
+        user_id: req.user._id,
         name,
         email,
         phone
   });
   // Your route logic here
-  res.status(201).json({ message: "Contacts API endpoint for post" });
+  res.status(201).json({ message: "contact record created successfully" });
 });
 const putContact=asyncHandler(
     async (req, res) => {
