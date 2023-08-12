@@ -1,11 +1,40 @@
 const asyncHandler=require('express-async-handler')
 const Contact=require('../models/contactModel');
 const userModel=require('../models/userModel');
+const mongoose=require('mongoose');
 const getContacts=asyncHandler(
     async (req, res) => {
-  // Your route logic here
-        const contacts = await Contact.find();
-    res.status(201).json({contacts:contacts});
+        // Your route logic here
+
+      const contactsWithUserData = await Contact.aggregate([
+        {
+          $match: {
+            user_id: new mongoose.Types.ObjectId("64d5184fa07aba73ac1ed59c"),
+          },
+        },
+        {
+          $lookup: {
+            from: "users", // Name of the User collection
+            localField: "user_id",
+            foreignField: "_id",
+            as: "user_data",
+          },
+        },
+        {
+          $unwind: "$user_data",
+        },
+        {
+          $project: {
+            _id: 1,
+            name: 1,
+            email: 1,
+            phone: 1,
+            user_email: "$user_data.email",
+            user_password: "$user_data.password",
+          },
+        },
+      ]);
+    res.status(201).json({ contacts: contactsWithUserData });
 })
 const postContacts = asyncHandler(async (req, res) => {
  

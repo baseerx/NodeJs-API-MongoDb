@@ -4,7 +4,7 @@ const validateTokenHandler=require("../middleware/validatetokenHandler");
 const router = express.Router();
 
 // Define your routes here
-router.get('/',getContacts).post("/",validateTokenHandler, postContacts);
+router.get('/',validateTokenHandler,getContacts).post("/",validateTokenHandler, postContacts);
 // Define your routes here
 
 // Define your routes here
